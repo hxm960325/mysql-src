@@ -47,6 +47,8 @@ int cgiMain()
 
 	//连接数据库
 	db = mysql_real_connect(db, "127.0.0.1", "root", "123456", "stu",  3306, NULL, 0);
+
+	//是否连接数据库成功
 	if (db == NULL)
 	{
 		fprintf(cgiOut,"mysql_real_connect fail:%s\n", mysql_error(db));

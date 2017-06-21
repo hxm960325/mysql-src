@@ -11,9 +11,10 @@ int cgiMain()
 {
 
 	fprintf(cgiOut, "Content-type:text/html;charset=utf-8\n\n");
-
 	FILE * fd;
-	char sid[32] = "\0";
+	char sid[12] ="\0";
+	char cid[4] = "\0";
+  char grade[2] = "\0";
 	int status = 0;
 	char ch;
 
@@ -29,7 +30,6 @@ int cgiMain()
 	}
 	fclose(fd);
 
-
 	status = cgiFormString("sid",  sid, 32);
 	if (status != cgiFormSuccess)
 	{
@@ -37,6 +37,19 @@ int cgiMain()
 		return 1;
 	}
 
+	status = cgiFormString("cid",  cid, 32);
+	if (status != cgiFormSuccess)
+	{
+		fprintf(cgiOut, "get cid error!\n");
+		return 1;
+	}
+
+	status = cgiFormString("grade",  grade, 32);
+	if (status != cgiFormSuccess)
+	{
+		fprintf(cgiOut, "get grade error!\n");
+		return 1;
+	}
 
 	int ret;
 	char sql[128] = "\0";
@@ -61,17 +74,27 @@ int cgiMain()
 	}
 
 
-	sprintf(sql, "update information set statu=0 where sid='%s'",sid);
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
-		fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
+		if (ret != 1)
+		{
+			fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
+			mysql_close(db);
+			return -1;
+		}
+	}
+
+
+
+	sprintf(sql, "insert into score values('%s', '%s', %d)", sid, cid, atoi(grade));
+	if (mysql_real_query(db, sql, strlen(sql) + 1) != 0)
+	{
+		fprintf(cgiOut, "%s\n", mysql_error(db));
 		mysql_close(db);
 		return -1;
 	}
 
-
-	fprintf(cgiOut, "delete information ok!\n");
+  fprintf(cgiOut, "add student ok!\n");
 	mysql_close(db);
-
 	return 0;
 }

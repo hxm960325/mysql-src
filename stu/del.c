@@ -78,7 +78,6 @@ int cgiMain()
 	int num = (int)res->row_count;
 	if(num){
 		sprintf(sql, "update information set statu=0 where sid='%s'",sid);
-
 		if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 		{
 			fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
@@ -86,20 +85,10 @@ int cgiMain()
 			return -1;
 		}
 
-		fprintf(cgiOut, "删除学生信息成功！\n");
+		fprintf(cgiOut, "<div class=\"container\"> <h1 class=\"text-center\">删除学生信息成功！</h1>");
 
 	}else{
-		if(!(fd = fopen(headname, "r"))){
-			fprintf(cgiOut, "Cannot open file, %s\n", headname);
-			return -1;
-		}
-		ch = fgetc(fd);
-
-		while(ch != EOF){
-			fprintf(cgiOut, "%c", ch);
-			ch = fgetc(fd);
-		}
-		fprintf(cgiOut, "该学生不存在\n");
+		fprintf(cgiOut, "<div class=\"container\"> <h1 class=\"text-center\">该学生不存在！</h1>");
 	}
 	mysql_close(db);
 	return 0;

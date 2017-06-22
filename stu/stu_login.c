@@ -92,7 +92,7 @@ int cgiMain()
 			fprintf(cgiOut, "%c", ch);
 			ch = fgetc(fd);
 		}
-		fprintf(cgiOut, "该学生不存在\n");
+		fprintf(cgiOut, "<div class=\"container\"> <h1 class=\"text-center\">该学生不存在！</h1>");
 	}
 	mysql_close(db);
 	return 0;

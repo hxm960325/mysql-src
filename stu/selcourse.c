@@ -45,7 +45,7 @@ int cgiMain()
 	MYSQL *db;
 	char sql[128] = "\0";
 
-		sprintf(sql, "select * from sc where sid= '%s'",sid);
+	sprintf(sql, "select * from sc where sid= '%s'",sid);
 
 	//初始化
 	db = mysql_init(NULL);

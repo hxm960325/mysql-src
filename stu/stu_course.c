@@ -83,8 +83,6 @@ int cgiMain()
 		}
 	}
 
-
-
 	sprintf(sql, "insert into sc values('%s', '%s', '%s')", sid, cid, cname);
 	if (mysql_real_query(db, sql, strlen(sql) + 1) != 0)
 	{

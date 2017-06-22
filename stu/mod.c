@@ -118,10 +118,9 @@ int cgiMain()
 			return -1;
 		}
 
-		fprintf(cgiOut, "修改学生信息成功！\n");
-
+		fprintf(cgiOut, "<div class=\"container\"> <h1 class=\"text-center\">修改学生信息成功！</h1>");
 	}else{
-		fprintf(cgiOut, "该学生不存在\n");
+		fprintf(cgiOut, "<div class=\"container\"> <h1 class=\"text-center\">该学生不存在！</h1>");
 	}
 	mysql_close(db);
 	return 0;

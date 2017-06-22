@@ -46,7 +46,7 @@ int cgiMain()
 	char sql[128] = "\0";
 
 
-		sprintf(sql, "select sid,sname,sex,age,scid from information where sid = '%s'", sid);
+	sprintf(sql, "select sid,sname,sex,age,scid from information where sid = '%s'", sid);
 
 	//初始化
 	db = mysql_init(NULL);

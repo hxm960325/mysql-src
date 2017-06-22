@@ -67,8 +67,6 @@ int cgiMain()
 		return 1;
 	}
 
-	//fprintf(cgiOut, "sid = %s, sname = %s, sex = %s, age = %s, scid = %s\n", sid, sname, sex, age, scid);
-
 	int ret;
 	char sql[128] = "\0";
 	MYSQL *db;
@@ -111,7 +109,7 @@ int cgiMain()
 		return -1;
 	}
 
-	fprintf(cgiOut, "add student ok!\n");
+	fprintf(cgiOut, "<div class=\"container\"> <h1 class=\"text-center\">成功添加学生信息！</h1>");
 	mysql_close(db);
 	return 0;
 }

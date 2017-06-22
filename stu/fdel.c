@@ -87,20 +87,10 @@ int cgiMain()
 			return -1;
 		}
 
-		fprintf(cgiOut, "永久删除学生信息成功！\n");
+		fprintf(cgiOut, "<div class=\"container\"> <h1 class=\"text-center\">永久删除学生信息成功！</h1>");
 
 	}else{
-		if(!(fd = fopen(headname, "r"))){
-			fprintf(cgiOut, "Cannot open file, %s\n", headname);
-			return -1;
-		}
-		ch = fgetc(fd);
-
-		while(ch != EOF){
-			fprintf(cgiOut, "%c", ch);
-			ch = fgetc(fd);
-		}
-		fprintf(cgiOut, "该学生不存在\n");
+		fprintf(cgiOut, "<div class=\"container\"> <h1 class=\"text-center\">该学生不存在！</h1>");
 	}
 	mysql_close(db);
 	return 0;

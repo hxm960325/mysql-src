@@ -50,9 +50,7 @@ int cgiMain()
 	MYSQL *db;
 	char sql[128] = "\0";
 
-
-
-
+	sprintf(sql, "select * from stu_infor where sid = '%s'", sid);
 
 	//初始化
 	db = mysql_init(NULL);
@@ -72,7 +70,6 @@ int cgiMain()
 		return -1;
 	}
 
-	sprintf(sql, "select * from score where sid = '%s'", sid);
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
 		fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));

@@ -11,9 +11,10 @@ int cgiMain()
 {
 
 	fprintf(cgiOut, "Content-type:text/html;charset=utf-8\n\n");
-
 	FILE * fd;
-	char sid[32] = "\0";
+	char sid[12] ="\0";
+	char cid[12] ="\0";
+  char cname[12] ="\0";
 	int status = 0;
 	char ch;
 
@@ -33,6 +34,20 @@ int cgiMain()
 	if (status != cgiFormSuccess)
 	{
 		fprintf(cgiOut, "get sid error!\n");
+		return 1;
+	}
+
+  status = cgiFormString("cid",  cid, 32);
+	if (status != cgiFormSuccess)
+	{
+		fprintf(cgiOut, "get cid error!\n");
+		return 1;
+	}
+
+  status = cgiFormString("cname",  cname, 32);
+	if (status != cgiFormSuccess)
+	{
+		fprintf(cgiOut, "get cname error!\n");
 		return 1;
 	}
 
@@ -58,49 +73,27 @@ int cgiMain()
 		return -1;
 	}
 
-	sprintf(sql, "select * from information where sid='%s' ",sid);
-
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
-		fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
-		mysql_close(db);
-		return -1;
-	}
-
-	MYSQL_RES *res;
-	res = mysql_store_result(db);
-	if (res == NULL)
-	{
-		fprintf(cgiOut,"mysql_store_result fail:%s\n", mysql_error(db));
-		return -1;
-	}
-
-	int num = (int)res->row_count;
-	if(num){
-		sprintf(sql, "update information set statu=0 where sid='%s'",sid);
-
-		if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
+		if (ret != 1)
 		{
 			fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
 			mysql_close(db);
 			return -1;
 		}
-
-		fprintf(cgiOut, "删除学生信息成功！\n");
-
-	}else{
-		if(!(fd = fopen(headname, "r"))){
-			fprintf(cgiOut, "Cannot open file, %s\n", headname);
-			return -1;
-		}
-		ch = fgetc(fd);
-
-		while(ch != EOF){
-			fprintf(cgiOut, "%c", ch);
-			ch = fgetc(fd);
-		}
-		fprintf(cgiOut, "该学生不存在\n");
 	}
+
+
+
+	sprintf(sql, "insert into sc values('%s', '%s', '%s')", sid, cid, cname);
+	if (mysql_real_query(db, sql, strlen(sql) + 1) != 0)
+	{
+		fprintf(cgiOut, "%s\n", mysql_error(db));
+		mysql_close(db);
+		return -1;
+	}
+
+	fprintf(cgiOut, "add course ok!\n");
 	mysql_close(db);
 	return 0;
 }

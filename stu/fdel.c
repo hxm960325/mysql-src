@@ -37,7 +37,6 @@ int cgiMain()
 		return 1;
 	}
 
-
 	int ret;
 	char sql[128] = "\0";
 	MYSQL *db;
@@ -60,8 +59,8 @@ int cgiMain()
 		return -1;
 	}
 
+  sprintf(sql, "select * from information where sid='%s' ",sid);
 
-	sprintf(sql, "delete from information where sid='%s'",sid);
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
 		fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
@@ -69,9 +68,40 @@ int cgiMain()
 		return -1;
 	}
 
+	MYSQL_RES *res;
+	res = mysql_store_result(db);
+	if (res == NULL)
+	{
+		fprintf(cgiOut,"mysql_store_result fail:%s\n", mysql_error(db));
+		return -1;
+	}
 
-	fprintf(cgiOut, "delete information ok!\n");
+	int num = (int)res->row_count;
+	if(num){
+		sprintf(sql, "delete from information where sid='%s'",sid);
+
+		if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
+		{
+			fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
+			mysql_close(db);
+			return -1;
+		}
+
+		fprintf(cgiOut, "永久删除学生信息成功！\n");
+
+	}else{
+		if(!(fd = fopen(headname, "r"))){
+			fprintf(cgiOut, "Cannot open file, %s\n", headname);
+			return -1;
+		}
+		ch = fgetc(fd);
+
+		while(ch != EOF){
+			fprintf(cgiOut, "%c", ch);
+			ch = fgetc(fd);
+		}
+		fprintf(cgiOut, "该学生不存在\n");
+	}
 	mysql_close(db);
-
 	return 0;
 }

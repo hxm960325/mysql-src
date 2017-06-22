@@ -68,8 +68,6 @@ int cgiMain()
 		return 1;
 	}
 
-	//fprintf(cgiOut, "sid = %s, sname = %s, sex = %s, age = %s, scid = %s\n", sid, sname, sex, age, scid);
-
 	int ret;
 	char sql[128] = "\0";
 	MYSQL *db;
@@ -92,8 +90,8 @@ int cgiMain()
 		return -1;
 	}
 
+	sprintf(sql, "select * from information where sid='%s' ",sid);
 
-	sprintf(sql, "update information set sname='%s', sex='%s', age= %d, scid='%s' where sid = '%s'",sname, sex, atoi(age), scid, sid);
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
 		fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
@@ -101,9 +99,30 @@ int cgiMain()
 		return -1;
 	}
 
+	MYSQL_RES *res;
+	res = mysql_store_result(db);
+	if (res == NULL)
+	{
+		fprintf(cgiOut,"mysql_store_result fail:%s\n", mysql_error(db));
+		return -1;
+	}
 
+	int num = (int)res->row_count;
+	if(num){
+		sprintf(sql, "update information set sname='%s', sex='%s', age= %d, scid='%s' where sid = '%s'",sname, sex, atoi(age), scid, sid);
 
-	fprintf(cgiOut, "update information ok!\n");
+		if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
+		{
+			fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
+			mysql_close(db);
+			return -1;
+		}
+
+		fprintf(cgiOut, "修改学生信息成功！\n");
+
+	}else{
+		fprintf(cgiOut, "该学生不存在\n");
+	}
 	mysql_close(db);
 	return 0;
 }

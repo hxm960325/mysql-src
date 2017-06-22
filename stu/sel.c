@@ -18,7 +18,7 @@ int cgiMain()
 		</head>");
 
 	FILE * fd;
-	char sname[32] = "\0";
+	char sid[32] = "\0";
 	int status = 0;
 	char ch;
 
@@ -34,10 +34,10 @@ int cgiMain()
 	}
 	fclose(fd);
 
-	status = cgiFormString("sname",  sname, 32);
+	status = cgiFormString("sid",  sid, 32);
 	if (status != cgiFormSuccess)
 	{
-		fprintf(cgiOut, "get sname error!\n");
+		fprintf(cgiOut, "get sid error!\n");
 		return 1;
 	}
 
@@ -45,15 +45,8 @@ int cgiMain()
 	MYSQL *db;
 	char sql[128] = "\0";
 
-	if (sname[0] == '*')
-	{
-		sprintf(sql, "select sid,sname,sex,age,scid from information where statu=1");
-	}
-	else
-	{
-		sprintf(sql, "select sid,sname,sex,age,scid from information where sname = '%s'", sname);
-	}
 
+		sprintf(sql, "select sid,sname,sex,age,scid from information where sid = '%s'", sid);
 
 	//初始化
 	db = mysql_init(NULL);
